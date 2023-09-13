@@ -10,6 +10,15 @@ var saml = require('passport-saml');
 
 dotenv.load();
 
+const CALLBACK_URL=process.env.CALLBACK_URL;
+const ENTRY_POINT=process.env.ENTRY_POINT;
+const ISSUER=process.env.ISSUER;
+const SESSION_SECRET = process.env.SESSION_SECRET;
+
+console.log(`CALLBACK_URL : ${CALLBACK_URL}`);
+console.log(`ENTRY_POINT : ${ENTRY_POINT}`);
+console.log(`ISSUER : ${ISSUER}`);
+console.log(`SESSION_SECRET : ${SESSION_SECRET}`);
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -20,11 +29,11 @@ passport.deserializeUser(function(user, done) {
 
 var samlStrategy = new saml.Strategy({
   // URL that goes from the Identity Provider -> Service Provider
-  callbackUrl: process.env.CALLBACK_URL,
+  callbackUrl: CALLBACK_URL,
   // URL that goes from the Service Provider -> Identity Provider
-  entryPoint: process.env.ENTRY_POINT,
+  entryPoint:ENTRY_POINT,
   // Usually specified as `/shibboleth` from site root
-  issuer: process.env.ISSUER,
+  issuer: ISSUER,
   identifierFormat: null,
   // Service Provider private key
   decryptionPvk: fs.readFileSync(__dirname + '/cert/key.pem', 'utf8'),
@@ -44,7 +53,7 @@ var app = express();
 
 app.use(cookieParser());
 app.use(bodyParser());
-app.use(session({secret: process.env.SESSION_SECRET}));
+app.use(session({secret: SESSION_SECRET}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -58,7 +67,7 @@ function ensureAuthenticated(req, res, next) {
 app.get('/',
   ensureAuthenticated, 
   function(req, res) {
-    res.send('Authenticated');
+    res.send(JSON.stringify(req.user));
   }
 );
 
@@ -94,7 +103,6 @@ app.use(function(err, req, res, next) {
   console.log("Fatal error: " + JSON.stringify(err));
   next(err);
 });
-
 var server = app.listen(4006, function () {
   console.log('Listening on port %d', server.address().port)
 });

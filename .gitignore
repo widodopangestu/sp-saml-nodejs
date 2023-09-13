@@ -3,3 +3,6 @@ cert/*
 node_modules/*
 npm-debug.log
 
+docker-compose.yml
+yarn.lock
+package-lock.json

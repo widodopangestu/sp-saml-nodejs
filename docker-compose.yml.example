@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nodejs
+    container_name: nodejs
+    restart: unless-stopped
+    environment:
+      - CALLBACK_URL=http://localhost:4002/login/callback
+      - ENTRY_POINT=http://localhost:8081/saml/idp/SSO/alias/asdp-idp
+      - ISSUER=http://localhost:8081/saml/idp/metadata
+      - SESSION_SECRET=secret_from_docker
+    ports:
+      - "4002:4006"
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+
+volumes:
+  node_modules:

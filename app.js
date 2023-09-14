@@ -50,6 +50,7 @@ var samlStrategy = new saml.Strategy({
 passport.use(samlStrategy);
 
 var app = express();
+app.set('view engine', 'pug');
 
 app.use(cookieParser());
 app.use(bodyParser());
@@ -65,9 +66,11 @@ function ensureAuthenticated(req, res, next) {
 }
 
 app.get('/',
-  ensureAuthenticated, 
   function(req, res) {
-    res.send(JSON.stringify(req.user));
+    if (req.isAuthenticated())
+      res.render('auth', { title: 'User Login', user: req.user});
+    else
+      res.render('index', { title: 'Home', message: 'Hello there!'});
   }
 );
 
@@ -84,6 +87,11 @@ app.post('/login/callback',
     res.redirect('/');
   }
 );
+
+app.post("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/");
+});
 
 app.get('/login/fail', 
   function(req, res) {

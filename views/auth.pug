@@ -1,0 +1,11 @@
+html
+  head
+    title= title
+  body
+    p User Data
+    ul
+        each val, key in user
+            li= key + ': ' + val 
+    br
+    form(id="login" action="/logout" method="post")
+        input(type="submit" value="Logout")

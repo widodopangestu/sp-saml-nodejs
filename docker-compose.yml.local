@@ -1,4 +1,3 @@
-
 version: '3'
 
 services:
@@ -10,12 +9,12 @@ services:
     container_name: nodejs
     restart: unless-stopped
     environment:
-      - CALLBACK_URL=http://10.1.107.155:9006/login/callback
-      - ENTRY_POINT=http://10.1.107.155:9008/saml/idp/SSO/alias/asdp-idp
-      - ISSUER=http://10.1.107.155:9008/saml/idp/metadata
+      - CALLBACK_URL=http://localhost:4002/login/callback
+      - ENTRY_POINT=http://localhost:8081/saml/idp/SSO/alias/asdp-idp
+      - ISSUER=http://localhost:8081/saml/idp/metadata
       - SESSION_SECRET=secret_from_docker
     ports:
-      - "9006:4006"
+      - "4002:4006"
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
